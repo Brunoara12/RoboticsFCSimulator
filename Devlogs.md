@@ -1,3 +1,83 @@
+# Devlog #5 - 2021-01-(23 - 25)
+
+-----
+
+## Plan for the day
+
+- [ ] Conveyor Belt Class
+	- [ ] Make Product boxes able to move on belt
+
+-----
+
+## To investigate
+
+
+-----
+
+## Learned today
+- More practice Timeline in C++
+- More practice with Timers in C++
+-----
+
+## Done today
+
+- [X] Conveyor Belt Class
+	- [X] Make Product boxes able to move on belt
+
+-----
+
+## Plan for tomorrow
+- [ ] Initiate Game
+	- [ ] Pallet Arrive through inbound
+	- [ ] Robot unpack pallet onto belt
+	- [ ] Robot pack onto pallet at other end
+	- [ ] When pallet full, send off
+-----
+
+## Resource list
+
+~~----------------------------------------------------------------------------------------------------------------------------------------~~
+
+# Devlog #4 - 2021-01-21
+
+-----
+
+## Plan for the day
+
+- [ ] Pallet removing products from pallet
+- [ ] Conveyor Belt Class
+	- [ ] Make Product boxes able to move on belt
+
+-----
+
+## To investigate
+
+
+-----
+
+## Learned today
+
+-----
+
+## Done today
+
+- [X] Pallet removing products from pallet
+- [ ] Conveyor Belt Class
+	- [ ] Make Product boxes able to move on belt
+
+-----
+
+## Plan for tomorrow
+
+- [ ] Conveyor Belt Class
+	- [ ] Make Product boxes able to move on belt
+
+-----
+
+## Resource list
+
+~~----------------------------------------------------------------------------------------------------------------------------------------~~
+
 # Devlog #3 - 2021-01-19
 
 -----
