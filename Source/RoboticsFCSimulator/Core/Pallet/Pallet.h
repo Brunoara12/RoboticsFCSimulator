@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Product.h"
 #include "Pallet.generated.h"
 
 
@@ -210,7 +211,7 @@ struct FPalletData {
 		return FVector(-1, -1, -1);
 	}
 
-	void SetBox(FVector Start, FVector Extent)
+	void SetBox(FVector Start, FVector Extent, bool bOccupied)
 	{
 		for (int z = Start.Z; z <= Extent.Z; z++)
 		{
@@ -218,7 +219,7 @@ struct FPalletData {
 			{
 				for (int x = Start.X; x <= Extent.X; x++)
 				{
-					Layers[z][y][x] = true;
+					Layers[z][y][x] = bOccupied;
 				}
 			}
 		}
@@ -251,7 +252,10 @@ public:
 	APallet();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
-	int32 NumOfBoxes;
+	int32 NumOfProductsToFillPallet;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
+		int32 NumOfProducts;
 
 	int32 MaxHeight;
 	int32 MaxWidth;
@@ -261,6 +265,9 @@ public:
 	FPalletData Pallet;
 
 	FVector TopLeftCorner;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
+		TArray<AProduct *> StackOfProducts;
 
 protected:
 	// Called when the game starts or when spawned
@@ -275,6 +282,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void AddProductToPallet();
+
+	UFUNCTION(BlueprintCallable)
+		void RemoveProductFromPallet();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

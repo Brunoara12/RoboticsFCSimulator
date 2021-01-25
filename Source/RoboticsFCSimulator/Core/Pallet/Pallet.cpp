@@ -30,7 +30,8 @@ APallet::APallet()
 	
 	Pallet = FPalletData(MaxHeight / 10, MaxLength / 10, MaxWidth / 10);
 
-	NumOfBoxes = 3;
+	NumOfProductsToFillPallet = 3;
+	NumOfProducts = 0;
 }
 
 // Called when the game starts or when spawned
@@ -50,7 +51,7 @@ void APallet::OnConstruction(const FTransform& Transform)
 void APallet::ConstructFullPallet()
 {
 	int times = 0;
-	while (times < NumOfBoxes)
+	while (times < NumOfProductsToFillPallet)
 	{
 		FVector AvailableSpot = Pallet.GetNextAvailableSpot();
 		FVector ProductLocation = 10 * AvailableSpot + TopLeftCorner;
@@ -66,37 +67,64 @@ void APallet::ConstructFullPallet()
 		Pallet.SetBox(AvailableSpot,
 			AvailableSpot + FVector((Product->MeshBoxSize.X / 10) - 1,
 				(Product->MeshBoxSize.Y / 10) - 1,
-				(Product->MeshBoxSize.Z / 10) - 1));
+				(Product->MeshBoxSize.Z / 10) - 1), true);
 		times++;
+		NumOfProducts++;
+		StackOfProducts.Push(Product);
 	}
-	V_LOGB("0,0,0", Pallet.CheckIfOccupied(FVector(0, 0, 0)));
-	V_LOGB("0,1,0", Pallet.CheckIfOccupied(FVector(0, 1, 0)));
-	V_LOGB("1,0,0", Pallet.CheckIfOccupied(FVector(1, 0, 0)));
-	V_LOGB("1,1,0", Pallet.CheckIfOccupied(FVector(1, 1, 0)));
-
-	V_LOGB("0,0,1", Pallet.CheckIfOccupied(FVector(0, 0, 1)));
-
-
-	V_LOGB("0,0,2", Pallet.CheckIfOccupied(FVector(0, 0, 2)));
+	
 }
 
 void APallet::AddProductToPallet()
 {
 	FVector AvailableSpot = Pallet.GetNextAvailableSpot();
-	FVector ProductLocation = 10 * AvailableSpot + TopLeftCorner;
-	FTransform TempTran = FTransform(ProductLocation);
-	V_LOGM("10x: %s. AS: %s. ActL: %s", *(10 * AvailableSpot).ToString(), *AvailableSpot.ToString(), *GetActorLocation().ToString());
-	TempTran.SetRotation(GetActorRotation().Quaternion());
+	V_LOGM("%s", *AvailableSpot.ToString());
+	if (AvailableSpot.Z != -1)
+	{
+		FVector ProductLocation = 10 * AvailableSpot + TopLeftCorner;
+		FTransform TempTran = FTransform(ProductLocation);
+		//V_LOGM("10x: %s. AS: %s. ActL: %s", *(10 * AvailableSpot).ToString(), *AvailableSpot.ToString(), *GetActorLocation().ToString());
+		TempTran.SetRotation(GetActorRotation().Quaternion());
 
-	AProduct* Product = GetWorld()->SpawnActor<AProduct>(AProduct::StaticClass(), TempTran);
-	Product->SetActorLocation(ProductLocation +
-		FVector(Product->MeshBoxSize.X / 2,
-			Product->MeshBoxSize.Y / 2,
-			Product->MeshBoxSize.Z / 2));
-	Pallet.SetBox(AvailableSpot,
-		AvailableSpot + FVector((Product->MeshBoxSize.X / 10) - 1,
-			(Product->MeshBoxSize.Y / 10) - 1,
-			(Product->MeshBoxSize.Z / 10) - 1));
+		AProduct* Product = GetWorld()->SpawnActor<AProduct>(AProduct::StaticClass(), TempTran);
+		if (Product)
+		{
+			Product->SetActorLocation(ProductLocation +
+				FVector(Product->MeshBoxSize.X / 2,
+					Product->MeshBoxSize.Y / 2,
+					Product->MeshBoxSize.Z / 2));
+			Pallet.SetBox(AvailableSpot,
+				AvailableSpot + FVector((Product->MeshBoxSize.X / 10) - 1,
+					(Product->MeshBoxSize.Y / 10) - 1,
+					(Product->MeshBoxSize.Z / 10) - 1), true);
+			NumOfProducts++;
+			StackOfProducts.Push(Product);
+		}
+	}
+}
+
+void APallet::RemoveProductFromPallet()
+{
+	if (StackOfProducts.Num() > 0) 
+	{
+		AProduct* Product = StackOfProducts.Pop();
+
+		FVector SpotOnPallet = (Product->GetActorLocation() -
+			TopLeftCorner -
+			FVector(Product->MeshBoxSize.X / 2,
+				Product->MeshBoxSize.Y / 2,
+				Product->MeshBoxSize.Z / 2)) / 10;
+
+		V_LOGM("ALoc: %s, Sp: %s", *Product->GetActorLocation().ToString(), *SpotOnPallet.ToString());
+
+		Pallet.SetBox(SpotOnPallet, 
+			SpotOnPallet + FVector((Product->MeshBoxSize.X / 10) - 1,
+				(Product->MeshBoxSize.Y / 10) - 1,
+				(Product->MeshBoxSize.Z / 10) - 1), false);
+
+		Product->Destroy();
+		NumOfProducts--;
+	}
 }
 
 
