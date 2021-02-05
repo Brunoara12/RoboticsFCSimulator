@@ -44,7 +44,7 @@ void AConveyorBelt::OnMoveObjects()
 			OverlapComp->GetOverlappingActors(OverlappingActors);
 			for (auto OverlappingActor : OverlappingActors)
 			{
-				if (MovedActors.Find(OverlappingActor) == -1) {
+				if (MovedActors.Find(OverlappingActor) == -1 && !OverlappingActor->ActorHasTag("Robot")) {
 
 					FVector DeltaLocation = DynamicSpeed * SplineComp->FindDirectionClosestToWorldLocation(OverlappingActor->GetActorLocation(), ESplineCoordinateSpace::Local);
 

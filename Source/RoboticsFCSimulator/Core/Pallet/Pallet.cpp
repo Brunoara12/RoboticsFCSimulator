@@ -127,7 +127,32 @@ void APallet::RemoveProductFromPallet()
 	}
 }
 
+AProduct* APallet::GetProductFromPallet()
+{
+	if (StackOfProducts.Num() > 0) 
+	{
+		AProduct* Product = StackOfProducts.Pop();
 
+		FVector SpotOnPallet = (Product->GetActorLocation() -
+            TopLeftCorner -
+            FVector(Product->MeshBoxSize.X / 2,
+                Product->MeshBoxSize.Y / 2,
+                Product->MeshBoxSize.Z / 2)) / 10;
+
+		V_LOGM("ALoc: %s, Sp: %s", *Product->GetActorLocation().ToString(), *SpotOnPallet.ToString());
+
+		Pallet.SetBox(SpotOnPallet, 
+            SpotOnPallet + FVector((Product->MeshBoxSize.X / 10) - 1,
+                (Product->MeshBoxSize.Y / 10) - 1,
+                (Product->MeshBoxSize.Z / 10) - 1), false);
+
+		
+		NumOfProducts--;
+		return Product;
+	}
+	else
+		return nullptr;
+}
 
 // Called every frame
 void APallet::Tick(float DeltaTime)

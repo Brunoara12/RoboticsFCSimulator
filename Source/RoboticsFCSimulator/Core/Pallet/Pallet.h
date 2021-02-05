@@ -285,8 +285,12 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 		void RemoveProductFromPallet();
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	//returns product removed and removes product association with pallet
+	UFUNCTION(BlueprintCallable)
+    AProduct* GetProductFromPallet();
 
 };
