@@ -34,24 +34,30 @@ void ARobotArm::BeginPlay()
 void ARobotArm::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if ((input == nullptr || output == nullptr) && SphereCom->GetScaledSphereRadius() < 250.0f)
-	{
-		SphereCom->SetSphereRadius(SphereCom->GetScaledSphereRadius() +10);
-	}
-	else if((input != nullptr || output != nullptr) && SphereCom->GetScaledSphereRadius() >= 250.0f)
-	{
-		SphereCom->SetSphereRadius(10);
-	}
-	else if (SphereCom->GetScaledSphereRadius() >= 250.0f)
-	{
-		SphereCom->SetSphereRadius(10);
-	}
-	else
-		this->Transfer();
 	
 
 }
 
+bool ARobotArm::SetupInputs()
+{
+	if ((input == nullptr || output == nullptr) && SphereCom->GetScaledSphereRadius() < 250.0f)
+	{
+		SphereCom->SetSphereRadius(SphereCom->GetScaledSphereRadius() +10);
+		return false;
+	}
+	if((input != nullptr || output != nullptr) && SphereCom->GetScaledSphereRadius() >= 250.0f)
+	{
+		SphereCom->SetSphereRadius(10);
+		return false;
+	}
+	if ((input != nullptr && output != nullptr))
+	{
+		SphereCom->SetSphereRadius(10); 
+		return true;
+	}
+	return true;
+	
+}
 // Called to bind functionality to input
 void ARobotArm::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -59,25 +65,33 @@ void ARobotArm::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void ARobotArm::Transfer()
+bool ARobotArm::PickupProduct()
+{
+	if(!InputEmpty() && OutputReady())
+	{
+		currentProduct = input->GetProductFromPallet();
+		Cast<UStaticMeshComponent>(currentProduct->GetRootComponent())->SetSimulatePhysics(false);
+		return true;
+	}
+	return false;
+}
+
+bool ARobotArm::Transfer()
 {
 	if(currentProduct == nullptr)
 	{
-		if(!InputEmpty() && OutputReady())
-		{
-			currentProduct = input->GetProductFromPallet();
-			Cast<UStaticMeshComponent>(currentProduct->GetRootComponent())->SetSimulatePhysics(false);
-		}
+		PickupProduct();
+		return true;
 		
 	}
-	else
+	currentProduct->SetActorLocation(FMath::Lerp(currentProduct->GetActorLocation(),dropPoint,0.05));
+	if((currentProduct->GetActorLocation() - dropPoint).Size() < 10)
 	{
-		currentProduct->SetActorLocation(FMath::Lerp(currentProduct->GetActorLocation(),dropPoint,0.1));
-		if((currentProduct->GetActorLocation() - dropPoint).Size() < 20)
-		{
-			DropProduct();
-		}
+		DropProduct();
+		return false;
 	}
+	
+	return true;
 }
 
 void ARobotArm::DropProduct()
@@ -95,7 +109,7 @@ bool ARobotArm::InputEmpty()
 	}
 	return true;
 }
-
+//TODO:check if conveyor is full
 bool ARobotArm::OutputReady()
 {
 	return true;
@@ -112,7 +126,7 @@ void ARobotArm::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor,
 	else if(OtherActor->ActorHasTag("Conveyor") && output == nullptr)
 	{
 		output = Cast<AConveyorBelt>(OtherActor);
-		dropPoint = output->GetActorLocation() + FVector(0,0,100);
+		dropPoint = output->GetActorLocation() + FVector(0,0,100) + (output->GetActorForwardVector()*30);
 	}
 }
 

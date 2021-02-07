@@ -21,11 +21,12 @@ public:
 	// Sets default values for this pawn's properties
 	ARobotArm();
 protected:
+
 	UPROPERTY(editAnywhere, BlueprintReadWrite)
 	class APallet* input;
 	UPROPERTY(editAnywhere, BlueprintReadWrite)
 	class AConveyorBelt* output;
-	UPROPERTY(editAnywhere)
+	UPROPERTY(editAnywhere, BlueprintReadWrite)
 	class AProduct* currentProduct;
 	UPROPERTY(editAnywhere)
 	class USphereComponent* SphereCom;
@@ -36,7 +37,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
+
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -44,7 +47,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-    void Transfer();
+	bool PickupProduct();
+	UFUNCTION(BlueprintCallable)
+	bool SetupInputs();
+	UFUNCTION(BlueprintCallable)
+    bool Transfer();
 	void DropProduct();
 	UFUNCTION(BlueprintCallable)
 	bool InputEmpty();
