@@ -69,7 +69,20 @@ bool ARobotArm::PickupProduct()
 {
 	if(!InputEmpty() && OutputReady())
 	{
-		currentProduct = input->GetProductFromPallet();
+		if(input->ActorHasTag("Pallet"))
+		{
+			currentProduct = Cast<APallet>(input)->GetProductFromPallet();
+		}
+		if(input->ActorHasTag("Conveyor"))
+		{
+			
+			currentProduct = Cast<AProduct>(Cast<AConveyorBelt>(input)->GetCloset(RootComponent->GetComponentLocation(),200));
+			if (currentProduct == nullptr)
+			{
+				return false;
+			}
+		}
+		
 		Cast<UStaticMeshComponent>(currentProduct->GetRootComponent())->SetSimulatePhysics(false);
 		return true;
 	}
@@ -84,8 +97,8 @@ bool ARobotArm::Transfer()
 		return true;
 		
 	}
-	currentProduct->SetActorLocation(FMath::Lerp(currentProduct->GetActorLocation(),dropPoint,0.05));
-	if((currentProduct->GetActorLocation() - dropPoint).Size() < 10)
+	currentProduct->SetActorLocation(FMath::Lerp(currentProduct->GetActorLocation(),dropPoint,0.1));
+	if((currentProduct->GetActorLocation() - dropPoint).Size() <= .10)
 	{
 		DropProduct();
 		return false;
@@ -96,14 +109,20 @@ bool ARobotArm::Transfer()
 
 void ARobotArm::DropProduct()
 {
-	
-	Cast<UStaticMeshComponent>(currentProduct->GetRootComponent())->SetSimulatePhysics(true);
+	if(output->ActorHasTag("Conveyor"))
+		Cast<UStaticMeshComponent>(currentProduct->GetRootComponent())->SetSimulatePhysics(true);
+	else if(output->ActorHasTag("Pallet"))
+		Cast<APallet>(output)->StackProductOnPallet(currentProduct,dropPoint);
 	currentProduct = nullptr;
 	
 }
 bool ARobotArm::InputEmpty()
 {
-	if(input->NumOfProducts > 0)
+	if(input->ActorHasTag("Pallet") && Cast<APallet>(input)->NumOfProducts > 0)
+	{
+		return false;
+	}
+	if(input->ActorHasTag("Conveyor") && Cast<AConveyorBelt>(input)->MovedActors.Num() > 0 && Cast<AProduct>(Cast<AConveyorBelt>(input)->GetCloset(RootComponent->GetComponentLocation(),200)) != nullptr)
 	{
 		return false;
 	}
@@ -112,6 +131,10 @@ bool ARobotArm::InputEmpty()
 //TODO:check if conveyor is full
 bool ARobotArm::OutputReady()
 {
+	if(output->ActorHasTag("Pallet") && Cast<APallet>(output)->ReadyForNewProduct())
+	{
+		return true;
+	}
 	return true;
 }
 
@@ -119,14 +142,30 @@ bool ARobotArm::OutputReady()
 void ARobotArm::OnOverlapBegin(UPrimitiveComponent* newComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->ActorHasTag("Pallet") && input == nullptr)
+	if (OtherActor->ActorHasTag("Pallet") || OtherActor->ActorHasTag("Conveyor"))
 	{
-		input = Cast<APallet>(OtherActor);
-	}
-	else if(OtherActor->ActorHasTag("Conveyor") && output == nullptr)
-	{
-		output = Cast<AConveyorBelt>(OtherActor);
-		dropPoint = output->GetActorLocation() + FVector(0,0,100) + (output->GetActorForwardVector()*30);
+		FVector dir = OtherActor->GetActorLocation() - RootComponent->GetComponentLocation();
+		if(dir.Y > 0   && input == nullptr)
+		{
+			input = OtherActor;
+		}
+		else if(dir.Y < 0 && output == nullptr)
+		{
+			output = OtherActor;
+		
+		}
 	}
 }
 
+void ARobotArm::GetDropPoint()
+{
+
+	if(output->ActorHasTag("Conveyor"))
+		dropPoint = output->GetActorLocation() + FVector(0,0,100) + (output->GetActorForwardVector()*30);
+	else
+	{
+		dropPoint = Cast<APallet>(output)->GetNextAvailiblePosition() + FVector(currentProduct->MeshBoxSize.X / 2,
+                    currentProduct->MeshBoxSize.Y / 2,
+                    currentProduct->MeshBoxSize.Z / 2);
+	}
+}

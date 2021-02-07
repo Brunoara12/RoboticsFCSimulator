@@ -144,3 +144,20 @@ void AConveyorBelt::Tick(float DeltaTime)
 	MyTimeline.TickTimeline(DeltaTime);
 }
 
+AActor* AConveyorBelt::GetCloset(FVector start,float maxDisance)
+{
+	AActor* clostest = nullptr;
+	float Distance = -1;
+	for (AActor* Actor : MovedActors)
+	{
+		float curDist = (start - Actor->GetActorLocation()).Size();
+		if((curDist < Distance || Distance == -1) && curDist <= maxDisance)
+		{
+			clostest = Actor;
+			Distance = curDist;
+		} 
+	}
+	return clostest;
+	
+}
+

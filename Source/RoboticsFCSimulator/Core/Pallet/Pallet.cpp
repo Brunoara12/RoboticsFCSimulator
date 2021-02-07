@@ -50,8 +50,8 @@ void APallet::OnConstruction(const FTransform& Transform)
 
 void APallet::ConstructFullPallet()
 {
-	int times = 0;
-	while (times < NumOfProductsToFillPallet)
+	 NumOfProducts = 0;
+	while (NumOfProducts < NumOfProductsToFillPallet)
 	{
 		FVector AvailableSpot = Pallet.GetNextAvailableSpot();
 		FVector ProductLocation = 10 * AvailableSpot + TopLeftCorner;
@@ -68,7 +68,6 @@ void APallet::ConstructFullPallet()
 			AvailableSpot + FVector((Product->MeshBoxSize.X / 10) - 1,
 				(Product->MeshBoxSize.Y / 10) - 1,
 				(Product->MeshBoxSize.Z / 10) - 1), true);
-		times++;
 		NumOfProducts++;
 		StackOfProducts.Push(Product);
 	}
@@ -152,6 +151,32 @@ AProduct* APallet::GetProductFromPallet()
 	}
 	else
 		return nullptr;
+}
+
+FVector APallet::GetNextAvailiblePosition()
+{
+	return  10 * Pallet.GetNextAvailableSpot() + TopLeftCorner;
+}
+
+bool APallet::ReadyForNewProduct()
+{
+	return true;
+}
+
+void APallet::StackProductOnPallet(AProduct* Product,FVector Location)
+{
+	FVector AvailableSpot = Pallet.GetNextAvailableSpot();
+	if (Product)
+	{
+		Pallet.SetBox(AvailableSpot,
+            AvailableSpot + FVector((Product->MeshBoxSize.X / 10) - 1,
+                (Product->MeshBoxSize.Y / 10) - 1,
+                (Product->MeshBoxSize.Z / 10) - 1), true);
+		NumOfProducts++;
+		StackOfProducts.Push(Product);
+	}
+	
+	
 }
 
 // Called every frame
