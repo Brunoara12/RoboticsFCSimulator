@@ -128,7 +128,7 @@ public:
 
 	~FLaneData()
 	{
-		SpawnPointVectors.Empty();
+		//SpawnPointVectors.Empty();
 	}
 };
 
