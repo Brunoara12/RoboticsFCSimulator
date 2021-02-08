@@ -46,6 +46,7 @@ void APallet::BeginPlay()
 void APallet::OnConstruction(const FTransform& Transform)
 {
 	SetActorLocation(FVector(Transform.GetLocation().X, Transform.GetLocation().Y, 6));
+
 }
 
 void APallet::ConstructFullPallet()

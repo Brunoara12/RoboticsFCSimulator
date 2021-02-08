@@ -14,9 +14,18 @@ class ARoboticsFCSimulatorPlayerController : public APlayerController
 public:
 	ARoboticsFCSimulatorPlayerController();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UUserWidget> wMainHUD;
+
+	UUserWidget* MainHUDPtr;
+
+
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
+
+	virtual void BeginPlay() override;
 
 	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;

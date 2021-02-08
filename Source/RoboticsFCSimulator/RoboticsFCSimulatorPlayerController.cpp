@@ -5,12 +5,34 @@
 #include "Runtime/Engine/Classes/Components/DecalComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "RoboticsFCSimulatorCharacter.h"
+#include "Blueprint/UserWidget.h"
 #include "Engine/World.h"
 
 ARoboticsFCSimulatorPlayerController::ARoboticsFCSimulatorPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
+
+}
+
+void ARoboticsFCSimulatorPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (wMainHUD)
+	{
+		MainHUDPtr = CreateWidget<UUserWidget>(this, wMainHUD);
+
+		if (MainHUDPtr)
+		{
+			MainHUDPtr->AddToViewport();
+		}
+
+		FInputModeGameAndUI InputMode;
+		InputMode.SetHideCursorDuringCapture(false);
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+		SetInputMode(InputMode);
+	}
 }
 
 void ARoboticsFCSimulatorPlayerController::PlayerTick(float DeltaTime)
