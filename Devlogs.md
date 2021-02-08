@@ -1,3 +1,67 @@
+# Devlog #7 - 2021-02-(06-08)
+
+-----
+
+## Plan for the day
+
+- [ ] UI
+	- [ ] ...
+- [ ] Initiate Game
+	- [ ] Pallet Arrive through inbound
+	- [ ] Robot unpack pallet onto belt
+	- [ ] Robot pack onto pallet at other end
+	- [ ] When pallet full, send off
+- [ ] Custom Time
+	- [ ] Make Speed adjust everything else except movement and placing
+	- [ ] Ability to pause real-time
+
+-----
+
+## To investigate
+
+
+-----
+
+## Learned today
+
+- Implement Interface class in C++ and implemented in BP  
+
+-----
+
+## Done today
+
+- [ ] UI
+	- [ ] ...
+- [ ] Initiate Game
+	- [X] Pallet Arrive through inbound
+	- [ ] Robot unpack pallet onto belt
+	- [ ] Robot pack onto pallet at other end
+	- [ ] When pallet full, send off
+- [ ] Custom Time
+	- [ ] Make Speed adjust everything else except movement and placing
+	- [ ] Ability to pause real-time
+
+-----
+
+## Plan for tomorrow
+
+- [ ] UI
+	- [ ] ...
+- [ ] Initiate Game
+	- [ ] Pallet Arrive through inbound (REFINE)
+	- [ ] Robot unpack pallet onto belt
+	- [ ] Robot pack onto pallet at other end
+	- [ ] When pallet full, send off
+- [ ] Custom Time
+	- [ ] Make Speed adjust everything else except movement and placing
+	- [ ] Ability to pause real-time
+
+-----
+
+## Resource list
+
+~~----------------------------------------------------------------------------------------------------------------------------------------~~
+
 # Devlog #6 - 2021-02-(02-05)
 
 -----
