@@ -293,6 +293,7 @@ public:
 	//returns product removed and removes product association with pallet
 	UFUNCTION(BlueprintCallable)
     AProduct* GetProductFromPallet();
+
 	FVector GetNextAvailiblePosition();
 	bool ReadyForNewProduct();
 	//adds product to palletData but does not spawn a new product

@@ -45,7 +45,7 @@ void APallet::BeginPlay()
 
 void APallet::OnConstruction(const FTransform& Transform)
 {
-	SetActorLocation(FVector(Transform.GetLocation().X, Transform.GetLocation().Y, 6));
+	//SetActorLocation(FVector(Transform.GetLocation().X, Transform.GetLocation().Y, 6));
 
 }
 
@@ -87,6 +87,7 @@ void APallet::AddProductToPallet()
 		TempTran.SetRotation(GetActorRotation().Quaternion());
 
 		AProduct* Product = GetWorld()->SpawnActor<AProduct>(AProduct::StaticClass(), TempTran);
+		
 		if (Product)
 		{
 			Product->SetActorLocation(ProductLocation +
@@ -153,6 +154,7 @@ AProduct* APallet::GetProductFromPallet()
 	else
 		return nullptr;
 }
+
 
 FVector APallet::GetNextAvailiblePosition()
 {
