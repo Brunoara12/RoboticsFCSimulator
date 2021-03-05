@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Pallet.h"
 #include "Engine/TargetPoint.h"
+#include "../HelperFiles/DefinedDebugHelpers.h"
 
 #include "StagingArea.generated.h"
 
@@ -34,14 +35,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray< ATargetPoint*> SpawnPoints;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FVector> SpawnPointVectors;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FString LaneName;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 t = 0;
 
 	// 1 - 4
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 LaneIndex;
 	int8 NumOfPallets;
 
@@ -60,7 +64,10 @@ public:
 		
 		if (NumOfPallets < 5)
 		{
-			return  SpawnPoints[NumOfPallets]->GetTransform();
+			if (SpawnPoints[NumOfPallets] != nullptr)
+			{
+				return  SpawnPoints[NumOfPallets]->GetTransform();
+			}
 		}
 		return FTransform(FVector(-1,-1,-1));
 	}
@@ -89,7 +96,7 @@ public:
 
 	void CreateSpawnPoints()
 	{
-		
+		V_LOGM("%d", LaneIndex);
 		int32 OFFSET_X = OFFSET_Border + 
 			(4 - LaneIndex) * OFFSET_PalletX +
 			(LaneIndex <= 2 ? 2 * OFFSET_SpaceX : 1 * OFFSET_SpaceX) +
@@ -122,14 +129,11 @@ public:
 		LaneName = LName;
 		LaneIndex = LIndex;
 		NumOfPallets = 0;
-
+		
 		CreateSpawnPoints();
 	}
 
-	~FLaneData()
-	{
-		//SpawnPointVectors.Empty();
-	}
+
 };
 
 USTRUCT(BlueprintType)
@@ -191,6 +195,8 @@ class ROBOTICSFCSIMULATOR_API AStagingArea : public AActor
 public:
 	// Sets default values for this actor's properties
 	AStagingArea();
+
+	TSubclassOf<APallet> PalletClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = StagingData, meta = (AllowPrivateAccess = "true"))
 	FStagingData StagingData;

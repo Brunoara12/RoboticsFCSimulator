@@ -17,6 +17,8 @@ public:
 
 	int32 Weight;
 	FString NameOfProduct;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
 	FVector MeshBoxSize;
 
 protected:
