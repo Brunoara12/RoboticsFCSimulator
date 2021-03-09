@@ -22,6 +22,7 @@ public:
 	ARobotArm();
 protected:
 
+	float deltaTime;//use in functions since we use the AI system and dont use the Tick Method
 	UPROPERTY(editAnywhere, BlueprintReadWrite)
 	class AActor* input;
 	UPROPERTY(editAnywhere, BlueprintReadWrite)

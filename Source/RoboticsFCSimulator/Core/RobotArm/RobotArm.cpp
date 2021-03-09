@@ -10,7 +10,7 @@
 
 
 // Sets default values
-ARobotArm::ARobotArm():input(nullptr),output(nullptr),currentProduct(nullptr),dropPoint(FVector(0,0,0))
+ARobotArm::ARobotArm():input(nullptr),output(nullptr),currentProduct(nullptr),dropPoint(FVector(0,0,0)),deltaTime(0)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,7 +26,6 @@ void ARobotArm::BeginPlay()
 	Super::BeginPlay();
 	
 	Cast<USphereComponent>(GetRootComponent())->OnComponentBeginOverlap.AddDynamic(this, &ARobotArm::OnOverlapBegin);
-
 	
 }
 
@@ -34,7 +33,7 @@ void ARobotArm::BeginPlay()
 void ARobotArm::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+	this->deltaTime = DeltaTime;
 
 }
 
@@ -97,8 +96,8 @@ bool ARobotArm::Transfer()
 		return true;
 		
 	}
-	currentProduct->SetActorLocation(FMath::Lerp(currentProduct->GetActorLocation(),dropPoint,0.1));
-	if((currentProduct->GetActorLocation() - dropPoint).Size() <= .10)
+	currentProduct->SetActorLocation(FMath::Lerp(currentProduct->GetActorLocation(),dropPoint,5* deltaTime));
+	if((currentProduct->GetActorLocation() - dropPoint).Size() <= .50)
 	{
 		DropProduct();
 		return false;
@@ -161,7 +160,7 @@ void ARobotArm::GetDropPoint()
 {
 
 	if(output->ActorHasTag("Conveyor"))
-		dropPoint = output->GetActorLocation() + FVector(0,0,100) + (output->GetActorForwardVector()*30);
+		dropPoint = output->GetActorLocation() + FVector(0,0,50) + (output->GetActorForwardVector()*30);
 	else
 	{
 		dropPoint = Cast<APallet>(output)->GetNextAvailiblePosition() + FVector(currentProduct->MeshBoxSize.X / 2,
