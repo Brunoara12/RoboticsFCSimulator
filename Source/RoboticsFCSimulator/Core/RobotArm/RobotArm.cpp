@@ -35,8 +35,19 @@ void ARobotArm::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	this->deltaTime = DeltaTime;
 
+
+
 }
 
+bool ARobotArm::CheckDistanceToInputs()
+{
+	if((GetActorLocation()- input->GetRootComponent()->GetComponentLocation() ).Size() > 150)
+	{
+		input = nullptr;
+		return false;
+	}
+	return true;
+}
 bool ARobotArm::SetupInputs()
 {
 	if ((input == nullptr || output == nullptr) && SphereCom->GetScaledSphereRadius() < 250.0f)
@@ -167,4 +178,12 @@ void ARobotArm::GetDropPoint()
                     currentProduct->MeshBoxSize.Y / 2,
                     currentProduct->MeshBoxSize.Z / 2);
 	}
+}
+
+void ARobotArm::ClearInputs()
+{
+	input = nullptr;
+	output = nullptr;
+	SphereCom->SetSphereRadius(10);
+
 }
