@@ -41,7 +41,7 @@ void ARobotArm::Tick(float DeltaTime)
 
 bool ARobotArm::CheckDistanceToInputs()
 {
-	if((GetActorLocation()- input->GetRootComponent()->GetComponentLocation() ).Size() > 150)
+	if((GetActorLocation()- input->GetRootComponent()->GetComponentLocation() ).Size() > 250 && !(input->ActorHasTag("Conveyor")))
 	{
 		input = nullptr;
 		return false;
