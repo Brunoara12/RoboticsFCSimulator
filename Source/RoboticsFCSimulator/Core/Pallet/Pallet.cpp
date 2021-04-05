@@ -38,7 +38,8 @@ APallet::APallet()
 void APallet::BeginPlay()
 {
 	Super::BeginPlay();
-	TopLeftCorner = GetActorLocation() + FVector(-MaxWidth / 2, -MaxLength / 2, 6);
+	FVector CornerOffset = GetActorRotation().RotateVector(FVector(-MaxWidth / 2, -MaxLength / 2, 6));
+	TopLeftCorner = GetActorLocation() + CornerOffset;
 
 	ConstructFullPallet();
 }
@@ -55,16 +56,34 @@ void APallet::ConstructFullPallet()
 	while (NumOfProducts < NumOfProductsToFillPallet)
 	{
 		FVector AvailableSpot = Pallet.GetNextAvailableSpot();
-		FVector ProductLocation = 10 * AvailableSpot + TopLeftCorner;
-		FTransform TempTran = FTransform(ProductLocation);
+		FVector ProductLocation = 10 * GetActorRotation().RotateVector(AvailableSpot) + TopLeftCorner;
+		FTransform TempTran = FTransform(GetActorRotation(), ProductLocation, FVector(1,1,1));
 		V_LOGM("10x: %s. AS: %s. ActL: %s", *(10 * AvailableSpot).ToString(), *AvailableSpot.ToString(), *GetActorLocation().ToString());
 		TempTran.SetRotation(GetActorRotation().Quaternion());
 
+		//DrawDebugSphere(GetWorld(), GetActorRotation().RotateVector(ProductLocation), 8, 16, FColor::Red, true);
+
+		
+		/*UChildActorComponent* NewComp = NewObject<UChildActorComponent>(this);
+		NewComp->bEditableWhenInherited = true;
+		NewComp->RegisterComponent();
+		NewComp->SetChildActorClass(AProduct::StaticClass());
+		NewComp->CreateChildActor();*/
+		
 		AProduct* Product = GetWorld()->SpawnActor<AProduct>(AProduct::StaticClass(), TempTran);
-		Product->SetActorLocation(ProductLocation +
-			FVector(Product->MeshBoxSize.X / 2,
+		FVector NewLocation = ProductLocation +
+			GetActorRotation().RotateVector(FVector(Product->MeshBoxSize.X / 2,
 				Product->MeshBoxSize.Y / 2,
 				Product->MeshBoxSize.Z / 2));
+
+		//NewLocation = GetActorRotation().RotateVector(NewLocation);
+
+		//DrawDebugSphere(GetWorld(), NewLocation, 8, 16, FColor::Magenta, true);
+
+		Product->SetActorLocation(NewLocation);
+		Product->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+
+		
 		Pallet.SetBox(AvailableSpot,
 			AvailableSpot + FVector((Product->MeshBoxSize.X / 10) - 1,
 				(Product->MeshBoxSize.Y / 10) - 1,
@@ -128,22 +147,39 @@ void APallet::RemoveProductFromPallet()
 	}
 }
 
+void APallet::MovePallet(FVector NewLoc, FRotator NewRotation)
+{
+	FVector CornerOffset = NewRotation.RotateVector(FVector(-MaxWidth / 2, -MaxLength / 2, 6));
+	TopLeftCorner = NewLoc + CornerOffset;
+
+	SetActorLocation(NewLoc);
+	SetActorRotation(NewRotation);
+}
+
 AProduct* APallet::GetProductFromPallet()
 {
+	AProduct* PeekProd = StackOfProducts[StackOfProducts.Num()-1];
+	FVector SpotOnPallet = GetActorRotation().GetInverse().RotateVector(PeekProd->GetActorLocation() -
+			TopLeftCorner - GetActorRotation().RotateVector(PeekProd->MeshBoxSize) / 2)
+			/ 10;
+	if (SpotOnPallet.X > MaxWidth / 10 || SpotOnPallet.Y > MaxLength / 10 || SpotOnPallet.Z > MaxHeight / 10)
+	{
+		V_LOGM("Vec: %s", *SpotOnPallet.ToString())
+			V_LOGM("ProdLoc %s", *PeekProd->GetActorLocation().ToString());
+		return nullptr;
+	}
+
 	if (StackOfProducts.Num() > 0) 
 	{
 		AProduct* Product = StackOfProducts.Pop();
 
-		FVector SpotOnPallet = (Product->GetActorLocation() -
-            TopLeftCorner -
-            FVector(Product->MeshBoxSize.X / 2,
-                Product->MeshBoxSize.Y / 2,
-                Product->MeshBoxSize.Z / 2)) / 10;
+		
+		DrawDebugSphere(GetWorld(), SpotOnPallet, 15, 16, FColor::Magenta, true);
 
 		V_LOGM("ALoc: %s, Sp: %s", *Product->GetActorLocation().ToString(), *SpotOnPallet.ToString());
-
-		Pallet.SetBox(SpotOnPallet, 
-            SpotOnPallet + FVector((Product->MeshBoxSize.X / 10) - 1,
+		FVector test = GetActorRotation().RotateVector(-SpotOnPallet);
+		Pallet.SetBox(SpotOnPallet,
+			SpotOnPallet + FVector((Product->MeshBoxSize.X / 10) - 1,
                 (Product->MeshBoxSize.Y / 10) - 1,
                 (Product->MeshBoxSize.Z / 10) - 1), false);
 
@@ -187,7 +223,13 @@ void APallet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	DEBUGBOX(GetActorLocation() + FVector(0 ,0, MaxHeight / 2 + 6), FVector(MaxWidth / 2, MaxLength/2, MaxHeight / 2), Blue, 0.2);
+	//FVector CornerOffset = GetActorRotation().RotateVector();
+	
+
+	FVector Up = FVector(TopLeftCorner.X, TopLeftCorner.Y, 500);
+	DEBUGL(TopLeftCorner, Up , .1f);
+	DrawDebugBox(GetWorld(), GetActorLocation() + FVector(0, 0, MaxHeight / 2 + 6),
+		FVector(MaxWidth / 2, MaxLength / 2, MaxHeight / 2), GetActorRotation().Quaternion(), FColor::Blue, false, 0.1f, (uint8) '\000', 1.f);
 
 }
 

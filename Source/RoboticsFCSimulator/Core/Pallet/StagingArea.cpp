@@ -21,7 +21,15 @@ AStagingArea::AStagingArea()
 		MeshComp->SetStaticMesh(MeshAsset.Object);
 	}
 
+	
+
 	MeshComp->SetRelativeScale3D(FVector(11.5, 6.1, 1));
+
+	static ConstructorHelpers::FClassFinder<APallet> PalletBPClass(TEXT("/Game/Core/Pallet/BP_Pallet"));
+	if (PalletBPClass.Class != nullptr)
+	{
+		PalletClass = PalletBPClass.Class;
+	}
 
 	StagingData = FStagingData();
 }
@@ -35,7 +43,7 @@ void AStagingArea::BeginPlay()
 	FTransform TargetTransform = StagingData.GetSpawnTransform(1);
 	if (TargetTransform.GetLocation().Z != -1)
 	{
-		APallet* SpawnPallet = GetWorld()->SpawnActor<APallet>(APallet::StaticClass(), TargetTransform);
+		APallet* SpawnPallet = GetWorld()->SpawnActor<APallet>(PalletClass, TargetTransform);
 		StagingData.AddPalletToLane(1, SpawnPallet);
 	}
 }
@@ -54,6 +62,14 @@ void AStagingArea::OnConstruction(const FTransform& Transform)
 		StagingData.Clear();
 		StagingData.test++;
 		V_LOG("HI");
+		V_LOGM("Lane %d + Points %d", StagingData.Lanes.Num(), StagingData.Lanes[0].SpawnPointVectors.Num());
+		if (StagingData.Lanes[0].SpawnPointVectors.Num() == 0)
+		{
+			for (int i = 0; i < StagingData.Lanes.Num(); i++)
+			{
+				StagingData.Lanes[i].CreateSpawnPoints();
+			}
+		}
 		for (int i = 0; i < StagingData.Lanes.Num(); i++)
 		{
 			for (int j = 0; j < StagingData.Lanes[i].SpawnPointVectors.Num(); j++)

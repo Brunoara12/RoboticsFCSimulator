@@ -66,7 +66,7 @@ void AConveyorBelt::HandleUpdate(float Value)
 	{
 		if (MeshComp)
 		{
-			V_LOG("Should Move");
+			//V_LOG("Should Move");
 			MeshComp->SetScalarParameterValueOnMaterials(FName("PTime"), Value * DynamicSpeed);
 		}
 	}
