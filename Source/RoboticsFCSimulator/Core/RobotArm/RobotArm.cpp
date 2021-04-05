@@ -7,6 +7,7 @@
 #include "Debugging/SlateDebugging.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
 #include "Windows/WindowsApplication.h"
+#include "../HelperFiles/DefinedDebugHelpers.h"
 
 
 // Sets default values
@@ -82,6 +83,11 @@ bool ARobotArm::PickupProduct()
 		if(input->ActorHasTag("Pallet"))
 		{
 			currentProduct = Cast<APallet>(input)->GetProductFromPallet();
+			if (currentProduct == nullptr)
+			{
+				V_LOG("Null Product")
+				return false;
+			}
 		}
 		if(input->ActorHasTag("Conveyor"))
 		{

@@ -264,10 +264,13 @@ public:
 	UPROPERTY()
 	FPalletData Pallet;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
 	FVector TopLeftCorner;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
 		TArray<AProduct *> StackOfProducts;
+
+	TArray<UChildActorComponent*> ProductsInPallet;
 
 protected:
 	// Called when the game starts or when spawned
@@ -286,6 +289,8 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		void RemoveProductFromPallet();
 	
+	UFUNCTION(BlueprintCallable)
+		void MovePallet(FVector NewLoc, FRotator NewRotation);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
