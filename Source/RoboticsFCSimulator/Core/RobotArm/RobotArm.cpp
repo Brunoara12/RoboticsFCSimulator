@@ -11,7 +11,7 @@
 
 
 // Sets default values
-ARobotArm::ARobotArm():input(nullptr),output(nullptr),currentProduct(nullptr),dropPoint(FVector(0,0,0)),deltaTime(0)
+ARobotArm::ARobotArm():input(nullptr),output(nullptr),currentProduct(nullptr),dropPoint(FVector(0,0,0)),deltaTime(0),filter(DestCode::None)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -96,6 +96,14 @@ bool ARobotArm::PickupProduct()
 			if (currentProduct == nullptr)
 			{
 				return false;
+			}
+			if(filter != DestCode::None)
+			{
+				if(currentProduct->DestAddress != filter)
+				{
+					currentProduct = nullptr;
+					return false;
+				}
 			}
 		}
 		

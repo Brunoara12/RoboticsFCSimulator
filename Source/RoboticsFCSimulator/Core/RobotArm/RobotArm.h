@@ -33,8 +33,9 @@ protected:
 	class USphereComponent* SphereCom;
 	UPROPERTY(editAnywhere)
 	FVector dropPoint;
-	
-protected:
+	UPROPERTY(editAnywhere, BlueprintReadWrite)
+	DestCode filter;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

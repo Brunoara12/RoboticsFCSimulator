@@ -6,6 +6,28 @@
 #include "GameFramework/Actor.h"
 #include "Product.generated.h"
 
+UENUM()
+enum class ShippingType : uint8
+{
+	Nextday,
+	NoRush,
+	Standard
+};
+
+UENUM()
+enum class DestCode : uint8
+{
+	AA,
+	BB,
+	CC,
+	DD,
+	EE,
+	FF,
+	GG,
+	HH,
+	None
+};
+
 UCLASS()
 class ROBOTICSFCSIMULATOR_API AProduct : public AActor
 {
@@ -14,8 +36,15 @@ class ROBOTICSFCSIMULATOR_API AProduct : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AProduct();
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString RetAddress;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	DestCode DestAddress;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ShippingType shippingType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Weight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString NameOfProduct;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))

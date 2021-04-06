@@ -10,8 +10,7 @@
 AProduct::AProduct()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Geometry/Meshes/1M_Cube.1M_Cube'"));
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Comp"));
 	RootComponent = MeshComp;
@@ -32,8 +31,11 @@ AProduct::AProduct()
 	
 	//Material_Dyn = UMaterialInstanceDynamic::Create(MaterialInt, MeshComp);
 
-
-	Weight = 10;
+	PrimaryActorTick.bCanEverTick = true;
+	shippingType = ShippingType::Standard;
+	Weight = rand()%20;
+	RetAddress = "Lorem Ipsum";
+	DestAddress = StaticCast<DestCode>(rand() % 8);
 	NameOfProduct = "Glasses";
 }
 
