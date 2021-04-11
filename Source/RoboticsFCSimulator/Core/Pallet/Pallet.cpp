@@ -17,6 +17,8 @@ APallet::APallet()
 	MaxWidth = 100;
 	MaxLength = 120;
 
+	Unloading = false;
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/Geometry/Meshes/1M_Cube.1M_Cube'"));
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Comp"));
 	RootComponent = MeshComp;
@@ -145,6 +147,11 @@ void APallet::RemoveProductFromPallet()
 		Product->Destroy();
 		NumOfProducts--;
 	}
+}
+
+void APallet::SetUnloading(bool b)
+{
+	Unloading = b;
 }
 
 void APallet::MovePallet(FVector NewLoc, FRotator NewRotation)

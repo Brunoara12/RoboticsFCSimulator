@@ -108,6 +108,7 @@ bool ARobotArm::PickupProduct()
 		}
 		
 		Cast<UStaticMeshComponent>(currentProduct->GetRootComponent())->SetSimulatePhysics(false);
+		//Cast<APallet>(input)->SetUnloading(true);
 		return true;
 	}
 	return false;
@@ -150,6 +151,7 @@ bool ARobotArm::InputEmpty()
 	{
 		return false;
 	}
+	//Cast<APallet>(input)->SetUnloading(false);
 	return true;
 }
 //TODO:check if conveyor is full

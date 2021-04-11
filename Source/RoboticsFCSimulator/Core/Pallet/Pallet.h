@@ -257,6 +257,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
 		int32 NumOfProducts;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pallet, meta = (AllowPrivateAccess = "true"))
+		bool Unloading;
+
 	int32 MaxHeight;
 	int32 MaxWidth;
 	int32 MaxLength;
@@ -289,6 +292,8 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		void RemoveProductFromPallet();
 	
+	
+
 	UFUNCTION(BlueprintCallable)
 		void MovePallet(FVector NewLoc, FRotator NewRotation);
 public:	
@@ -298,6 +303,9 @@ public:
 	//returns product removed and removes product association with pallet
 	UFUNCTION(BlueprintCallable)
     AProduct* GetProductFromPallet();
+
+	UFUNCTION(BlueprintCallable)
+		void SetUnloading(bool b);
 
 	FVector GetNextAvailiblePosition();
 	bool ReadyForNewProduct();
