@@ -37,24 +37,75 @@ AProduct::AProduct()
 	RetAddress = "Lorem Ipsum";
 	DestAddress = StaticCast<DestCode>(rand() % 8);
 	NameOfProduct = "Glasses";
+
+	MeshComp->SetMaterial(0, MaterialInt);
+    	UMaterialInstanceDynamic* Material_Dyn = MeshComp->CreateAndSetMaterialInstanceDynamic(0);
+    	 FLinearColor RandomColor;
+    
+    	switch (DestAddress)
+    	{
+    		case DestCode::AA:
+    			RandomColor.R = 1;
+    			RandomColor.G = 0;
+    			RandomColor.B = 0;
+    			break;
+    		case DestCode::BB:
+    			RandomColor.R = 0;
+    			RandomColor.G = 1;
+    			RandomColor.B = 0;
+    			break;
+    			
+    		case DestCode::CC:
+    			RandomColor.R = 0;
+    			RandomColor.G = 0;
+    			RandomColor.B = 1;
+    			break;
+    		case DestCode::DD:
+    			RandomColor.R = 1;
+    			RandomColor.G = 1;
+    			RandomColor.B = 0;
+    			break;
+    		case DestCode::EE:
+    			RandomColor.R = 1;
+    			RandomColor.G = 0;
+    			RandomColor.B = 1;
+    			break;
+    		case DestCode::FF:
+    			RandomColor.R = 0;
+    			RandomColor.G = 1;
+    			RandomColor.B = 1;
+    			break;
+    		case DestCode::GG:
+    			RandomColor.R = 1;
+    			RandomColor.G = .2;
+    			RandomColor.B = .2;
+    			break;
+    		case DestCode::HH:
+    			RandomColor.R = 1;
+    			RandomColor.G = 1;
+    			RandomColor.B = 1;
+    			break;
+    		default:
+    			RandomColor.R = 0;
+    			RandomColor.G = 0;
+    			RandomColor.B = 0;
+    			break;
+    	}
+    
+    	 RandomColor.A = 1;
+    	 
+    	 if (Material_Dyn)
+    	 {
+    	 	Material_Dyn->SetVectorParameterValue(FName("ProductColor"), RandomColor);
+    	 }
 }
 
 // Called when the game starts or when spawned
 void AProduct::BeginPlay()
 {
 	Super::BeginPlay();
-	MeshComp->SetMaterial(0, MaterialInt);
-	UMaterialInstanceDynamic* Material_Dyn = MeshComp->CreateAndSetMaterialInstanceDynamic(0);
-	FLinearColor RandomColor;
-	RandomColor.R = FMath::RandRange(0, 1);
-	RandomColor.G = FMath::RandRange(0, 1);
-	RandomColor.B = FMath::RandRange(0, 1);
-	RandomColor.A = 1;
-
-	if (Material_Dyn)
-	{
-		Material_Dyn->SetVectorParameterValue(FName("ProductColor"), RandomColor);
-	}
+	
+	
 }
 
 // Called every frame
