@@ -14,18 +14,18 @@ enum class ShippingType : uint8
 	Standard
 };
 
-UENUM()
-enum class DestCode : uint8
+UENUM(BlueprintType)
+enum class EDestCode : uint8
 {
-	AA,
-	BB,
-	CC,
-	DD,
-	EE,
-	FF,
-	GG,
-	HH,
-	None
+	AA UMETA(DisplayName = "AA"), 
+	BB UMETA(DisplayName = "BB"),
+	CC UMETA(DisplayName = "CC"),
+	DD UMETA(DisplayName = "DD"),
+	EE UMETA(DisplayName = "EE"),
+	FF UMETA(DisplayName = "FF"),
+	GG UMETA(DisplayName = "GG"),
+	HH UMETA(DisplayName = "HH"),
+	None UMETA(DisplayName = "None")
 };
 
 UCLASS()
@@ -39,7 +39,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString RetAddress;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	DestCode DestAddress;
+	EDestCode DestAddress;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ShippingType shippingType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

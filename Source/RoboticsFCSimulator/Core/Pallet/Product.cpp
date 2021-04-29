@@ -35,7 +35,7 @@ AProduct::AProduct()
 	shippingType = ShippingType::Standard;
 	Weight = rand()%20;
 	RetAddress = "Lorem Ipsum";
-	DestAddress = StaticCast<DestCode>(rand() % 8);
+	DestAddress = StaticCast<EDestCode>(rand() % 8);
 	NameOfProduct = "Glasses";
 
 	MeshComp->SetMaterial(0, MaterialInt);
@@ -44,43 +44,43 @@ AProduct::AProduct()
     
     	switch (DestAddress)
     	{
-    		case DestCode::AA:
+    		case EDestCode::AA:
     			RandomColor.R = 1;
     			RandomColor.G = 0;
     			RandomColor.B = 0;
     			break;
-    		case DestCode::BB:
+    		case EDestCode::BB:
     			RandomColor.R = 0;
     			RandomColor.G = 1;
     			RandomColor.B = 0;
     			break;
     			
-    		case DestCode::CC:
+    		case EDestCode::CC:
     			RandomColor.R = 0;
     			RandomColor.G = 0;
     			RandomColor.B = 1;
     			break;
-    		case DestCode::DD:
+    		case EDestCode::DD:
     			RandomColor.R = 1;
     			RandomColor.G = 1;
     			RandomColor.B = 0;
     			break;
-    		case DestCode::EE:
+    		case EDestCode::EE:
     			RandomColor.R = 1;
     			RandomColor.G = 0;
     			RandomColor.B = 1;
     			break;
-    		case DestCode::FF:
+    		case EDestCode::FF:
     			RandomColor.R = 0;
     			RandomColor.G = 1;
     			RandomColor.B = 1;
     			break;
-    		case DestCode::GG:
+    		case EDestCode::GG:
     			RandomColor.R = 1;
     			RandomColor.G = .2;
     			RandomColor.B = .2;
     			break;
-    		case DestCode::HH:
+    		case EDestCode::HH:
     			RandomColor.R = 1;
     			RandomColor.G = 1;
     			RandomColor.B = 1;
